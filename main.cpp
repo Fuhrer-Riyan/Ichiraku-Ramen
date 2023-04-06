@@ -1,7 +1,7 @@
 // ABDUL RIYAN
 // CEO OF ORANGE INC.
 // ICHIRAKU RAMEN BILL GENERATOR
-// C++
+// C++/
 // 05/04/2023
 
 
@@ -10,6 +10,7 @@
 #include <vector>
 #include <cmath>
 #include<fstream>
+#include <chrono>
 using namespace std;
 
 struct Item {
@@ -26,47 +27,67 @@ void displayItemList(vector<Item>& itemList) {
     cout << "------------------------------------------------------------" << endl;
 
     for (int i = 0; i < itemList.size(); i++) {
-        cout << left << setw(10) << (i+1) << setw(20) << itemList[i].name << setw(10) << "Rs. " << itemList[i].price << endl;
+        cout << left << setw(10) << (i+1) << setw(20) << itemList[i].name << "Rs. " << itemList[i].price << endl;
     }
 
     cout << "------------------------------------------------------------" << endl;
 }
 
-void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>& itemQuantities) {
-    double totalAmount = 0;
-    cout << fixed << setprecision(3);
-    cout << "\n\n************************* BILL ****************************" << endl;
-    cout << left << setw(20) << "Item Name" << setw(10) << "Price" << setw(10) << "Quantity" << endl;
-    cout << "-----------------------------------------------------------" << endl;
 
+void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>& itemQuantities, string customerName, string date, string time) {
+    
+    
+    auto now = std::chrono::system_clock::now();
+    std::time_t timestamp = std::chrono::system_clock::to_time_t(now);
+
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&timestamp), "%Y-%m-%d_%H-%M-%S");
+    std::string filename = "bill_" + ss.str() + ".txt";
+    
+    
+    
+    double totalAmount = 0;
+    cout << "********************************* BILL **************************************" << endl;
+    cout << left << setw(20) << "Item Name" << setw(10) << "      Price" << "          Quantity" <<"           "<< "Amount" <<endl;
+    cout << "\n-----------------------------------------------------------------------------" << endl;
+    
     for (int i = 0; i < itemIndices.size(); i++) {
         int index = itemIndices[i];
         int quantity = itemQuantities[i];
-        cout << left << setw(20) << itemList[index].name << setw(10) << "Rs. " << itemList[index].price << setw(10) << quantity << endl;
+        cout << left << setw(20) << itemList[index].name << "   Rs. " << itemList[index].price <<"               "<< quantity << "                "<<itemList[index].price*quantity<<endl;
         totalAmount += round(itemList[index].price * quantity * 1000) / 1000;
     }
 
-    cout << "-----------------------------------------------------------" << endl;
-    cout << right << setw(40) << "Total amount: Rs. " << totalAmount << endl;
-    cout << "***********************************************************" << endl;
+        cout << "\n-----------------------------------------------------------------------------"<<endl;
+        cout << right << setw(20) << "                           Total amount: Rs. " << totalAmount << endl;
+        cout << "*****************************************************************************" << endl;
 
-
-    ofstream outputFile("bill.txt");
+    ofstream outputFile(filename);
     if (outputFile.is_open()) {
-        outputFile << "************************* BILL ****************************" << endl;
-        outputFile << left << setw(20) << "Item Name" << setw(10) << "Price" << setw(10) << "Quantity" << endl;
-        outputFile << "-----------------------------------------------------------" << endl;
+        outputFile <<"                              ICHIRAKU RAMEN                                  ";
+        outputFile << "\n\nCUSTOMER NAME : " << customerName << endl;
+        outputFile << "DATE : " << date << endl;
+        outputFile << "TIME : " << time << "\n\n";
+
+        outputFile << "********************************* BILL **************************************" << endl;
+        outputFile<< left << setw(20) << "Item Name" << setw(10) << "      Price" << "          Quantity" <<"           "<< "Amount" <<endl;
+        outputFile << "\n-----------------------------------------------------------------------------" << endl;
 
         for (int i = 0; i < itemIndices.size(); i++) {
             int index = itemIndices[i];
             int quantity = itemQuantities[i];
-            outputFile << left << setw(20) << itemList[index].name << setw(10) << "Rs. " << itemList[index].price << setw(10) << quantity << endl;
+            outputFile << left << setw(20) << itemList[index].name << "   Rs. " << itemList[index].price <<"               "<< quantity << "               "<<itemList[index].price*quantity<<endl;
         }
 
-        outputFile << "-----------------------------------------------------------" << endl;
-        outputFile << right << setw(40) << "Total amount: Rs. " << totalAmount << endl;
-        outputFile << "***********************************************************" << endl;
+        outputFile << "\n-----------------------------------------------------------------------------"<<endl;
+        outputFile << right << setw(20) << "                           Total amount: Rs. " << totalAmount << endl;
+        outputFile << "*****************************************************************************" << endl;
+        outputFile<<"\n\n\n#OPEN ALL DAYS 7 AM TO 12 PM!!!"<<endl;
+        outputFile<<"=>CONTACT : +91 8100xxx188"<<endl;
+        outputFile<<"=>EMAIL   : ichirakuramen@gmail.com";
+
         outputFile.close();
+
     } else {
         cout << "Unable to save the bill to a file" << endl;
     }
@@ -77,21 +98,22 @@ void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>&
 int main(){
 
     int choice_1,choice_2,choice_3,itemNo, quantity;
+    string customerName, date, time;
 
 
 
-    vector<Item> itemList = {{"Veg Ramen", 100.0}, {"Chicken Ramen", 150.0}, {"Special Ramen", 250.0}, {"Miso Soup", 100.0}, {"Sake", 60.0}};
+    vector<Item> itemList = {{"Veg Ramen", 120}, {"Chicken Ramen", 180}, {"Special Ramen", 250},{"Char Siu & Eggs",150},{"Miso Soup", 100}, {"Sake", 120}};
 
 
     vector<int> itemIndices;
     vector<int> itemQuantities;
 
 
-    cout<<"\n\n\n";
-    cout << "********************************************" << endl;
-    cout << "           Welcome to Ichiraku Ramen               " << endl;
-    cout << "********************************************" << endl;
-    cout<<"\n\n\n";
+    cout <<"\n\n\n";
+    cout << "*****************************************************************************" << endl;
+    cout << "                             Welcome to Ichiraku Ramen                       " << endl;
+    cout << "*****************************************************************************" << endl;
+    cout <<"\n\n\n";
 
 
     while(1>0){
@@ -123,7 +145,15 @@ int main(){
             if (itemIndices.empty()) {
                 cout << "No items purchased. Thank you for visiting our shop!" << endl;
             }else {
-                generateBill(itemList, itemIndices, itemQuantities);
+                cout<<"\nCUSTOMER NAME : ";
+                cin.ignore();
+                getline(cin,customerName);
+                cout<<"DATE : ";
+                getline(cin,date);
+                cout<<"TIME : ";
+                getline(cin,time);
+                cout<<"\n\n\n";
+                generateBill(itemList, itemIndices, itemQuantities,customerName,date,time);
                 cout<<"Thank You For Visiting Us!";
                 cout<<"\n\n\n";
             }
@@ -156,4 +186,3 @@ int main(){
     return 0;
 
 }
-
