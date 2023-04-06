@@ -92,9 +92,9 @@ void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>&
         outputFile << right << setw(20) << "                           GST          : Rs. " << GST << endl;
         outputFile << right << setw(20) << "                           Total Amount : Rs. " << TotalAmount << endl;
         outputFile << "*****************************************************************************" << endl;
-        outputFile<<"\n\n\n=>OPEN ALL DAYS 7 AM TO 12 PM!"<<endl;
-        outputFile<<"=>CONTACT : +91 8100xxx188"<<endl;
-        outputFile<<"=>EMAIL   : ichirakuramen@gmail.com";
+        outputFile<<"\n\n\n=> OPEN ALL DAYS 7 AM TO 12 PM!"<<endl;
+        outputFile<<"=> CONTACT : +91 8100xxx188"<<endl;
+        outputFile<<"=> EMAIL   : ichirakuramen@gmail.com";
 
         outputFile.close();
 
