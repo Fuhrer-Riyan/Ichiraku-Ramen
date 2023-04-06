@@ -5,12 +5,14 @@
 // 05/04/2023
 
 
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <cmath>
+#include<iostream>
+#include<iomanip>
+#include<vector>
+#include<cmath>
 #include<fstream>
-#include <chrono>
+#include<chrono>
+#include<ctime>
+#include<dirent.h>
 using namespace std;
 
 struct Item {
@@ -37,16 +39,18 @@ void displayItemList(vector<Item>& itemList) {
 void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>& itemQuantities, string customerName, string date, string time) {
     
     
-    auto now = std::chrono::system_clock::now();
-    std::time_t timestamp = std::chrono::system_clock::to_time_t(now);
+    auto now = chrono::system_clock::now();
+    time_t timestamp = chrono::system_clock::to_time_t(now);
 
-    std::stringstream ss;
-    ss << std::put_time(std::localtime(&timestamp), "%Y-%m-%d_%H-%M-%S");
-    std::string filename = "bill_" + ss.str() + ".txt";
+    stringstream ss;    
+    string folderName = "Bills/";
+    ss << put_time(localtime(&timestamp), "%Y-%m-%d_%H-%M-%S");
+    string filename = folderName + "bill_" + customerName + "_" + ss.str() + ".txt";
+
     
     
     
-    double totalAmount = 0;
+    double Amount = 0,GST,TotalAmount;
     cout << "********************************* BILL **************************************" << endl;
     cout << left << setw(20) << "Item Name" << setw(10) << "      Price" << "          Quantity" <<"           "<< "Amount" <<endl;
     cout << "\n-----------------------------------------------------------------------------" << endl;
@@ -55,11 +59,15 @@ void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>&
         int index = itemIndices[i];
         int quantity = itemQuantities[i];
         cout << left << setw(20) << itemList[index].name << "   Rs. " << itemList[index].price <<"               "<< quantity << "                "<<itemList[index].price*quantity<<endl;
-        totalAmount += round(itemList[index].price * quantity * 1000) / 1000;
+        Amount += round(itemList[index].price * quantity * 1000) / 1000;
+        GST = 0.18*Amount;
+        TotalAmount = GST + Amount;
     }
 
         cout << "\n-----------------------------------------------------------------------------"<<endl;
-        cout << right << setw(20) << "                           Total amount: Rs. " << totalAmount << endl;
+        cout << right << setw(20) << "                           Amount       : Rs. " << Amount << endl;
+        cout << right << setw(20) << "                           GST          : Rs. " << GST << endl;
+        cout << right << setw(20) << "                           Total Amount : Rs. " << TotalAmount << endl;
         cout << "*****************************************************************************" << endl;
 
     ofstream outputFile(filename);
@@ -80,9 +88,11 @@ void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>&
         }
 
         outputFile << "\n-----------------------------------------------------------------------------"<<endl;
-        outputFile << right << setw(20) << "                           Total amount: Rs. " << totalAmount << endl;
+        outputFile << right << setw(20) << "                           Amount       : Rs. " << Amount << endl;
+        outputFile << right << setw(20) << "                           GST          : Rs. " << GST << endl;
+        outputFile << right << setw(20) << "                           Total Amount : Rs. " << TotalAmount << endl;
         outputFile << "*****************************************************************************" << endl;
-        outputFile<<"\n\n\n#OPEN ALL DAYS 7 AM TO 12 PM!!!"<<endl;
+        outputFile<<"\n\n\n=>OPEN ALL DAYS 7 AM TO 12 PM!"<<endl;
         outputFile<<"=>CONTACT : +91 8100xxx188"<<endl;
         outputFile<<"=>EMAIL   : ichirakuramen@gmail.com";
 
@@ -98,7 +108,21 @@ void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>&
 int main(){
 
     int choice_1,choice_2,choice_3,itemNo, quantity;
-    string customerName, date, time;
+    string customerName;
+
+    time_t now = time(0); 
+    char* dt = ctime(&now); 
+    string date(dt, dt + 10); 
+    string time(dt + 11, dt + 19); 
+
+
+    DIR* dir = opendir("Bills");
+    if (dir){
+        closedir(dir);
+    }
+    else {
+        int status = mkdir("Bills"); 
+    }
 
 
 
@@ -126,7 +150,7 @@ int main(){
             displayItemList(itemList);
             while(1>0){
                 cout<<"\n\n\n";
-                cout << "Enter the item number to purchase (0 to exit): ";
+                cout << "Enter the item number to purchase (0 to exit) : ";
                 cin >> itemNo;
 
                 if (itemNo == 0) {
@@ -148,10 +172,6 @@ int main(){
                 cout<<"\nCUSTOMER NAME : ";
                 cin.ignore();
                 getline(cin,customerName);
-                cout<<"DATE : ";
-                getline(cin,date);
-                cout<<"TIME : ";
-                getline(cin,time);
                 cout<<"\n\n\n";
                 generateBill(itemList, itemIndices, itemQuantities,customerName,date,time);
                 cout<<"Thank You For Visiting Us!";
