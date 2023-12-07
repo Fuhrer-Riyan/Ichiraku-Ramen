@@ -59,10 +59,11 @@ void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>&
         int index = itemIndices[i];
         int quantity = itemQuantities[i];
         cout << left << setw(20) << itemList[index].name << "   Rs. " << itemList[index].price <<"               "<< quantity << "                "<<itemList[index].price*quantity<<endl;
-        Amount += round(itemList[index].price * quantity * 1000) / 1000;
-        GST = 0.18*Amount;
-        TotalAmount = GST + Amount;
+        Amount += round(itemList[index].price * quantity * 1000) / 1000;        
     }
+
+        GST=(0.18*Amount);
+        TotalAmount=round(GST+Amount);
 
         cout << "\n-----------------------------------------------------------------------------"<<endl;
         cout << right << setw(20) << "                           Amount       : Rs. " << Amount << endl;
@@ -90,7 +91,7 @@ void generateBill(vector<Item>& itemList, vector<int>& itemIndices, vector<int>&
         outputFile << "\n-----------------------------------------------------------------------------"<<endl;
         outputFile << right << setw(20) << "                           Amount       : Rs. " << Amount << endl;
         outputFile << right << setw(20) << "                           GST          : Rs. " << GST << endl;
-        outputFile << right << setw(20) << "                           Total Amount : Rs. " << TotalAmount << endl;
+        outputFile << right << setw(20) << "                           Total Amount : Rs. " << round(TotalAmount) << endl;
         outputFile << "*****************************************************************************" << endl;
         outputFile<<"\n\n\n=> OPEN ALL DAYS 7 AM TO 12 PM!"<<endl;
         outputFile<<"=> CONTACT : +91 8100xxx188"<<endl;
@@ -206,3 +207,4 @@ int main(){
     return 0;
 
 }
+
